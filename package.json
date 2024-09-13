@@ -1,0 +1,19 @@
+{
+  "name": "chai_and_code",
+  "version": "1.0.0",
+  "description": "just for test purpose",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "node",
+    "mongodb"
+  ],
+  "author": "Satyam kumar",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
