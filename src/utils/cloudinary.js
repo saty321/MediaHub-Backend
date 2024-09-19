@@ -1,4 +1,5 @@
 import {v2 as cloudinary} from "cloudinary"
+import exp from "constants";
 import fs, { unlink } from "fs"
 
 
@@ -21,3 +22,5 @@ const uploadOnCloudinary = async (localFilePath) => {
         return null;
     }
 }
+
+export {uploadOnCloudinary}
