@@ -31,5 +31,7 @@ router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
 router.route("/change-password").post(verifyJWT,changeCurrentPassword)
 router.route("/current-user").get(verifyJWT,getCurrentUser)
+router.route("/update-avtar").patch(verifyJWT,updateUserAvatar)
+router.route("/current-coverImage").patch(verifyJWT,updateUsercoverImage)
 
 export {router}
