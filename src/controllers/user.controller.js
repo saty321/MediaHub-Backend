@@ -172,16 +172,15 @@ const refreshAccessToken = asyncHandler(async (req, res) =>{
             secure: true
         }
     
-        const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(user._id)
-    
+        const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)    
         return res
         .status(200)
         .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200,
-                {accessToken, refreshToken: newRefreshToken},
+                {accessToken, refreshToken: refreshToken},
                 "Access token refreshed"
             )
         )
@@ -205,10 +204,12 @@ const changeCurrentPassword = asyncHandler(async(req, res)=>{
 
     return res
     .status(200)
-    .ApiResponse(
-        200,
-        {},
-        "Password changed successfully"
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "successfully password has been changed"
+        )
     )
 })
 
@@ -223,28 +224,35 @@ const getCurrentUser = asyncHandler(async(req, res)=>{
 const updateAccountDetails = asyncHandler(async(req, res) =>{
     const {fullName, email} = req.body
     
-    if(!fullName || !email){
-        throw new ApiError(400, "All fields are required")
-    }
-
-    const user = User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            $set: {
-                fullName,
-                email
-            }
+    try {
+        if(!fullName || !email){
+            throw new ApiError(400, "All fields are required")
         }
-    ).select("-password")
-
-    return res
-    .status(200)
-    .json(new ApiResponse(200, user, "Account details updated successfully"))
+    
+        const user = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                $set: {
+                    fullName,
+                    email
+                }
+            },
+            {
+                new:true
+            }
+        ).select("-password")
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user, "Account details updated successfully")
+        )
+    } catch (error) {
+        throw new ApiError(500, error?.message)
+    }
 })
 
 const updateUserAvatar = asyncHandler(async(req, res)=>{
     const avatarLocalPath = req.file?.path
-
     if(!avatarLocalPath){
         throw new ApiError(400, "Avatar file is missing")
     }
@@ -268,7 +276,7 @@ const updateUserAvatar = asyncHandler(async(req, res)=>{
     return res
     .status(200)
     .json(
-        new ApiResponse(200, user, "avtar updated successfully")
+        new ApiResponse(200, {}, "avtar updated successfully")
     )
 })
 const updateUsercoverImage = asyncHandler(async(req, res)=>{
@@ -297,7 +305,7 @@ const updateUsercoverImage = asyncHandler(async(req, res)=>{
     return res
     .status(200)
     .json(
-        new ApiResponse(200, user, "avtar updated successfully")
+        new ApiResponse(200, {}, "avtar updated successfully")
     )
 })
 export {
